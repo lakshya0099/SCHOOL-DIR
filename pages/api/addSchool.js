@@ -5,7 +5,7 @@ import path from "path";
 
 export const config = {
   api: {
-    bodyParser: false, // file uploads ke liye required
+    bodyParser: false, 
   },
 };
 
@@ -29,18 +29,18 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: "File upload error" });
       }
 
-      console.log("📂 Formidable Files:", files); // 🔎 Debugging line
+      console.log("📂 Formidable Files:", files); 
       console.log("📝 Formidable Fields:", fields);
 
       const { name, address, city, state, contact, email_id } = fields;
 
       let image = null;
       if (files.image) {
-        // Handle both array or object
+       
         const file = Array.isArray(files.image) ? files.image[0] : files.image;
 
         const oldPath = file.filepath;
-        const fileName = file.originalFilename || path.basename(file.filepath); // ✅ fallback if originalFilename is missing
+        const fileName = file.originalFilename || path.basename(file.filepath); 
         const newPath = path.join(uploadDir, fileName);
 
         try {
