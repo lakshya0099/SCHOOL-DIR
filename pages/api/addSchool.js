@@ -5,13 +5,13 @@ import path from "path";
 
 export const config = {
   api: {
-    bodyParser: false, 
+    bodyParser: false,
   },
 };
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
-    const uploadDir = path.join(process.cwd(), "public/schoolImages");
+    const uploadDir = path.join("/tmp", "schoolImages");
 
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
@@ -29,27 +29,22 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: "File upload error" });
       }
 
-      console.log("📂 Formidable Files:", files); 
+      console.log("📂 Formidable Files:", files);
       console.log("📝 Formidable Fields:", fields);
 
       const { name, address, city, state, contact, email_id } = fields;
 
       let image = null;
       if (files.image) {
-       
         const file = Array.isArray(files.image) ? files.image[0] : files.image;
 
-        const oldPath = file.filepath;
-        const fileName = file.originalFilename || path.basename(file.filepath); 
-        const newPath = path.join(uploadDir, fileName);
-
-        try {
-          fs.renameSync(oldPath, newPath);
-        } catch (err) {
-          console.error("File move error:", err);
-        }
+        const filePath = file.filepath;
+        const fileName =
+          file.originalFilename || path.basename(file.filepath);
 
         image = fileName;
+
+        console.log("✅ Image saved temporarily at:", filePath);
       }
 
       try {
@@ -62,7 +57,7 @@ export default async function handler(req, res) {
             city?.toString(),
             state?.toString(),
             Number(contact),
-            image,
+            image, 
             email_id?.toString(),
           ]
         );
