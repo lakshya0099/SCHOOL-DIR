@@ -1,6 +1,7 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import Navbar from "@/components/Navbar";
 
 export default function AddSchool() {
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
@@ -39,11 +40,13 @@ export default function AddSchool() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-6">
-      <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 w-full max-w-lg text-white">
-        <h1 className="text-3xl font-extrabold mb-6 text-center drop-shadow-lg">
-           Add New School
-        </h1>
+    <>
+      <Navbar />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-6">
+        <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 w-full max-w-lg text-white">
+          <h1 className="text-3xl font-extrabold mb-6 text-center drop-shadow-lg">
+            Add New School
+          </h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <input
@@ -117,5 +120,6 @@ export default function AddSchool() {
         )}
       </div>
     </div>
+    </>
   );
 }
