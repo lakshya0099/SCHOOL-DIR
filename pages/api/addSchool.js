@@ -11,7 +11,7 @@ export const config = {
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
-    const uploadDir = path.join("/tmp", "schoolImages");
+    const uploadDir = path.join(process.cwd(), "public/schoolImages");
 
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
@@ -29,26 +29,27 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: "File upload error" });
       }
 
-      console.log("📂 Formidable Files:", files);
-      console.log("📝 Formidable Fields:", fields);
-
       const { name, address, city, state, contact, email_id } = fields;
 
       let image = null;
       if (files.image) {
         const file = Array.isArray(files.image) ? files.image[0] : files.image;
-
-        const filePath = file.filepath;
+        const oldPath = file.filepath;
         const fileName =
           file.originalFilename || path.basename(file.filepath);
+        const newPath = path.join(uploadDir, fileName);
+
+        try {
+          fs.renameSync(oldPath, newPath);
+        } catch (err) {
+          console.error("File move error:", err);
+        }
 
         image = fileName;
-
-        console.log("✅ Image saved temporarily at:", filePath);
       }
 
       try {
-        const conn = await getConnection();
+        const conn = getConnection(); // ✅ Pool use ho raha hai
         await conn.execute(
           "INSERT INTO schools (name, address, city, state, contact, image, email_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
           [
@@ -57,7 +58,7 @@ export default async function handler(req, res) {
             city?.toString(),
             state?.toString(),
             Number(contact),
-            image, 
+            image,
             email_id?.toString(),
           ]
         );
